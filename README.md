@@ -1,4 +1,4 @@
-````markdown
+
 # 🤖 Edge-AI Performance Benchmarker
 
 **Measure what matters.**  
@@ -43,7 +43,6 @@ In physical systems like robots and edge devices, accuracy isn't enough — late
 │   └── logs.csv
 ├── README.md
 └── requirements.txt
-````
 
 ## 🛠️ Setup Instructions
 
