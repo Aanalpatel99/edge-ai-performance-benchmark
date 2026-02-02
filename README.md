@@ -1,3 +1,4 @@
+````markdown
 # 🤖 Edge-AI Performance Benchmarker
 
 **Measure what matters.**  
@@ -42,3 +43,23 @@ In physical systems like robots and edge devices, accuracy isn't enough — late
 │   └── logs.csv
 ├── README.md
 └── requirements.txt
+````
+
+## 🛠️ Setup Instructions
+
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/edge-ai-performance-benchmark.git
+
+# Create virtual environment (optional)
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## 📌 License
+
+MIT – free to use and modify.
+
