@@ -1,2 +1,14 @@
 opencv-python
 mediapipe==0.10.9
+matplotlib
+numpy
+psutil
+streamlit
+streamlit-webrtc
+streamlit-autorefresh
+av
+aiortc
+pandas
+PySide6
+pyqtgraph
+numpy

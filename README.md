@@ -1,64 +1,93 @@
+# 🧠 Edge-AI Performance Benchmarker
 
-# 🤖 Edge-AI Performance Benchmarker
+A real-time desktop benchmarking tool that measures **latency and FPS under hardware constraints** using MediaPipe Hand and Face detection.
 
-**Measure what matters.**  
-A real-time benchmarking tool to visualize latency and FPS of AI models in live webcam streams — built for Edge AI, Robotics, and real-time systems.
+Built with:
 
-## 🚀 Project Overview
+* OpenCV
+* MediaPipe
+* PySide6 (Qt)
+* pyqtgraph
+* psutil
 
-In physical systems like robots and edge devices, accuracy isn't enough — latency kills. This tool demonstrates how to measure and display real-time performance metrics for lightweight AI models (hand and face detection) using:
+---
 
-- ✅ Live webcam feed (OpenCV)
-- ✅ MediaPipe Hand & Face Detection
-- ✅ Real-time latency (ms) & FPS overlay
-- ✅ Performance logging and analysis
+## 🚀 Features
 
-## 🎯 Goals
+* Live webcam feed
+* Hand / Face mode switching
+* Adjustable resolution (320×240 → 1280×720)
+* Adjustable processing rate (Hz)
+* Real-time latency & FPS measurement
+* Battery vs Plugged-in detection
+* Live performance plots
+* CSV export + final benchmark plots
 
-- Showcase performance trade-offs in Edge AI.
-- Build a portfolio-ready project with measurable metrics.
-- Learn how to profile and optimize lightweight models.
+---
 
-## 🧰 Tech Stack
+## 🏗 Architecture
 
-- Python
-- OpenCV
-- MediaPipe
-- Matplotlib (for analysis)
-- NumPy, Time module
+```
+Camera → Worker Thread → MediaPipe Model
+            ↓
+      Performance Logger
+            ↓
+     Qt UI + pyqtgraph
+```
 
-## 📸 Preview (Coming Soon)
+Key Engineering Concepts:
 
-> Demo GIF or video will go here once built
+* Dedicated worker thread
+* Frame dropping to avoid backlog
+* Model-only latency measurement
+* Hardware-aware benchmarking
 
-## 📂 Structure (Planned)
+---
+
+## 🛠 Installation
 
 ```bash
-📁 edge-ai-performance-benchmark/
-├── main.py
-├── utils/
-│   ├── performance.py
-│   └── detector.py
-├── data/
-│   └── logs.csv
-├── README.md
-└── requirements.txt
-
-## 🛠️ Setup Instructions
-
-```bash
-# Clone the repo
 git clone https://github.com/yourusername/edge-ai-performance-benchmark.git
+cd edge-ai-performance-benchmark
 
-# Create virtual environment (optional)
 python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
+source venv/bin/activate   # Windows: venv\Scripts\activate
 
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-## 📌 License
+---
 
-MIT – free to use and modify.
+## ▶️ Run the Application
 
+```bash
+python app.py
+```
+
+---
+
+## 📊 Exporting Results
+
+After stopping a session:
+
+1. Click **Export CSV + Plots**
+2. CSV will contain all logged frames
+3. Plots include:
+
+   * Latency over time
+   * FPS over time
+   * Resolution comparison
+   * Power state comparison
+   * Combined summary analysis
+
+---
+
+## 🧠 What This Project Demonstrates
+
+* Real-time performance measurement
+* Edge AI optimization strategies
+* Hardware-aware system design
+* Trade-offs between resolution, latency, and FPS
+* Engineering decision documentation
+
+---
