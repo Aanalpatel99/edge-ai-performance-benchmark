@@ -1,90 +1,86 @@
 import cv2
 import time
-import mediapipe as mp
 
-#---------------- Initialization ----------------#
+from utils.hand_detector import detect_hands
+from utils.face_detector import detect_faces
 
-# Session start time
-session_start = time.time()
-
-# mediapipe hands model initialization
-mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(
-    static_image_mode=False,       
-    max_num_hands=2,               
-    min_detection_confidence=0.7,  
-    min_tracking_confidence=0.5    
-)
-mp_draw = mp.solutions.drawing_utils  
-
-# log lists
-fps_list = []
-latency_list = []
-
-# Text settings for display
+# ---------------- Constants ---------------- #
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 COLOR = (0, 255, 0)
 FONT_SCALE = 1
 THICKNESS = 2
 
+# ---------------- Performance Logs ---------------- #
+fps_hand, latency_hand = [], []
+fps_face, latency_face = [], []
 
+# ---------------- Main Application ---------------- #
 def main():
-    # webcam capture initialization
     cap = cv2.VideoCapture(0)
+    prev_time = 0
+    frame_count = 0
+    session_start = time.time()
+    mode = "hand"
 
-    # For FPS calculation
-    prev_time, frame_count, session_time = 0, 0, 0
-    
-    #---------------- Processing Loop ----------------#
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
-            print("⚠️⚠️⚠️ Warning: Frame capture failed. Reinitializing webcam... ⚠️⚠️⚠️")
-            print("Attempting to reinitialize webcam...")
+            print("⚠️ Warning: Frame capture failed. Reinitializing webcam...")
             cap.release()
             cap = cv2.VideoCapture(0)
             continue
 
-        # Calculate FPS
+        # --- Performance Timing Start ---
         curr_time = time.time()
         start_time = time.perf_counter()
         fps = 1 / (curr_time - prev_time)
-
-        # Convert BGR to RGB
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        result = hands.process(rgb_frame)
-
-        # Draw hand landmarks if detected
-        if result.multi_hand_landmarks:
-            for hand_landmarks in result.multi_hand_landmarks:
-                mp_draw.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
-        
         prev_time = curr_time
+
+        # --- Model Processing ---
+        if mode == "hand":
+            frame, result = detect_hands(frame)
+        elif mode == "face":
+            frame, result = detect_faces(frame)
+
+        # --- Performance Timing End ---
         end_time = time.perf_counter()
         latency_ms = (end_time - start_time) * 1000
-        
-        # Display FPS on frame
-        cv2.putText(frame, f'FPS: {int(fps)}', (10, 30),
-                    FONT, FONT_SCALE, COLOR, THICKNESS)
-        cv2.putText(frame, f'Latency: {latency_ms:.2f}ms', (10, 60),
-                    FONT, FONT_SCALE, COLOR, THICKNESS)
-        cv2.putText(frame, f'Session Time: {session_time:.2f}s', (10, 90),
-                    FONT, FONT_SCALE, COLOR, THICKNESS)
-        
-        #---------------- Logging Results ----------------#
-        fps_list.append(fps)
-        latency_list.append(latency_ms)
-        
-        frame_count += 1
         session_time = time.time() - session_start
-        
-        cv2.imshow('Webcam Stream', frame)
+        frame_count += 1
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        # --- Overlay Text ---
+        cv2.putText(frame, f'Mode: {mode.upper()}', (10, 30), FONT, 0.7, COLOR, 2)
+        cv2.putText(frame, f'FPS: {fps:.2f}', (10, 60), FONT, 0.7, COLOR, 2)
+        cv2.putText(frame, f'Latency: {latency_ms:.2f} ms', (10, 90), FONT, 0.7, COLOR, 2)
+        cv2.putText(frame, f'Session: {session_time:.1f} s', (10, 120), FONT, 0.7, COLOR, 2)
+
+        # --- Log Metrics ---
+        if mode == "hand":
+            fps_hand.append(fps)
+            latency_hand.append(latency_ms)
+        elif mode == "face":
+            fps_face.append(fps)
+            latency_face.append(latency_ms)
+
+        # --- Display Frame ---
+        cv2.imshow('Edge AI Performance Benchmark', frame)
+
+        # --- Handle Key Input ---
+        key = cv2.waitKey(1) & 0xFF
+        if key == ord('q'):
             break
+        elif key == ord('h'):
+            mode = "hand"
+        elif key == ord('f'):
+            mode = "face"
 
     cap.release()
     cv2.destroyAllWindows()
-    
+
+    print("📊 Session Complete")
+    print(f"Frames Processed: {frame_count}")
+    print(f"Hand FPS Avg: {sum(fps_hand)/len(fps_hand):.2f}" if fps_hand else "No hand tracking data.")
+    print(f"Face FPS Avg: {sum(fps_face)/len(fps_face):.2f}" if fps_face else "No face tracking data.")
+
 if __name__ == "__main__":
     main()
