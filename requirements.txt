@@ -1,2 +1,4 @@
 opencv-python
 mediapipe==0.10.9
+matplotlib
+numpy

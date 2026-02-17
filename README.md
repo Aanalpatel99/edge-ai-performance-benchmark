@@ -58,6 +58,31 @@ source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 ```
 
+## 📊 Benchmarking Features
+
+This project measures real-time performance on live webcam streams.
+
+Metrics captured per frame:
+- **Latency (ms)** using `time.perf_counter()`
+- **FPS** based on frame-to-frame timing
+- **Mode**: Hand Tracking vs Face Detection
+- **Resolution** presets (1280×720 / 640×480 / 320×240)
+- **Power state tag** (battery/plugged) for controlled experiments
+
+### Controls
+- `h` → Hand mode
+- `f` → Face mode
+- `1/2/3` → Resolution presets
+- `b` → Tag as battery
+- `g` → Tag as plugged
+- `e` → Export CSV
+- `p` → Save plot image
+- `q` → Quit (auto-saves CSV + plot)
+
+### Outputs
+- CSV logs saved to: `data/perf_YYYYMMDD_HHMMSS.csv`
+- Plot images saved to: `data/plot_YYYYMMDD_HHMMSS.png`
+
 ## 📌 License
 
 MIT – free to use and modify.
