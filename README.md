@@ -1,15 +1,3 @@
-Perfect. You’ve officially finished the **core benchmark phase**.
-
-Here’s everything you asked for — clean, professional, portfolio-ready.
-
----
-
-# ✅ 1️⃣ README.md (Full Version)
-
-You can copy-paste this directly into `README.md`.
-
----
-
 ```markdown
 # 🧠 Edge-AI Performance Benchmarker
 
