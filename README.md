@@ -1,178 +1,140 @@
-```markdown
 # 🧠 Edge-AI Performance Benchmarker
 
-> Real-time benchmarking of lightweight AI models under hardware constraints.
+A real-time desktop benchmarking tool that measures **latency and FPS under hardware constraints** using MediaPipe Hand and Face detection.
 
-Most AI demos focus on accuracy.  
-In Edge AI and robotics, **latency and FPS matter more than accuracy** — a 2-second decision means a crashed robot.
+Built with:
 
-This project benchmarks real-time **Hand Tracking** and **Face Detection** using MediaPipe, measuring:
-
-- Per-frame Latency (ms)
-- FPS (frames per second)
-- Resolution impact
-- Power state impact (battery vs plugged)
-
-All metrics are logged and visualized automatically.
+* OpenCV
+* MediaPipe
+* PySide6 (Qt)
+* pyqtgraph
+* psutil
 
 ---
 
 ## 🚀 Features
 
-- Real-time webcam processing (OpenCV)
-- Hand Tracking (MediaPipe Hands)
-- Face Detection (MediaPipe Face Detection)
-- Per-frame latency measurement (`time.perf_counter`)
-- FPS calculation (frame-to-frame timing)
-- Software resolution scaling (320×240 / 640×480 / 1280×720)
-- Automatic power-state detection (`psutil`)
-- Unified CSV logging
-- Automatic multi-plot generation on exit
-
----
-
-## 🎮 Controls
-
-| Key | Action |
-|------|--------|
-| `h` | Hand mode |
-| `f` | Face mode |
-| `1` | Target resolution 1280×720 |
-| `2` | Target resolution 640×480 |
-| `3` | Target resolution 320×240 |
-| `q` | Quit & auto-export CSV + plots |
-
-Power state is automatically detected (plugged / battery / unknown).
-
----
-
-## 📊 What Gets Logged
-
-Each frame logs:
-
-- Timestamp
-- Frame index
-- Active model (hand / face)
-- FPS
-- Latency (ms)
-- Target resolution
-- Power state
-
-All data is saved into:
-
-```
-
-data/perf_all_<timestamp>.csv
-
-```
-
-Plots are automatically generated into:
-
-```
-
-data/plots_<timestamp>/
-
-```
-
-Generated plots include:
-
-1. Hand latency & FPS (time-series)
-2. Face latency & FPS (time-series)
-3. Power state comparison
-4. Resolution comparison
-5. Combined performance overview
-
----
-
-## 📈 Benchmark Findings
-
-### 🔹 Model Complexity
-
-| Model | Latency Range | FPS Range |
-|--------|--------------|-----------|
-| Hand Tracking | 16–35 ms | 24–32 FPS |
-| Face Detection | 3–8 ms | 30–40 FPS |
-
-Face detection is ~4–6× faster than hand tracking due to lower model complexity (bounding boxes vs 21 landmarks).
-
----
-
-### 🔹 Resolution Impact
-
-Resolution scaling had limited impact on hand tracking latency due to internal model resizing.
-
-Face detection showed moderate sensitivity to higher resolutions.
-
----
-
-### 🔹 Power State Impact
-
-Battery mode increased latency:
-
-- Hand: ~10–20% increase
-- Face: noticeable but smaller increase
-
-This demonstrates real hardware-level constraints affecting Edge AI performance.
-
----
-
-## 🧩 Design Decisions
-
-- Used `time.perf_counter()` for precise latency measurement
-- Used software resizing instead of camera resolution switching for stability
-- Unified logging into a single structured CSV
-- Automatic plot generation for reproducibility
-- Modular architecture (separate detectors + performance logger)
+* Live webcam feed
+* Hand / Face mode switching
+* Adjustable resolution (320×240 → 1280×720)
+* Adjustable processing rate (Hz)
+* Real-time latency & FPS measurement
+* Battery vs Plugged-in detection
+* Live performance plots
+* CSV export + final benchmark plots
 
 ---
 
 ## 🏗 Architecture
 
 ```
+Camera → Worker Thread → MediaPipe Model
+            ↓
+      Performance Logger
+            ↓
+     Qt UI + pyqtgraph
+```
 
-Webcam → Resize → Model (Hand/Face) → Draw → Measure → Log → Overlay → Display
-↓
-CSV + Plot Generation
+Key Engineering Concepts:
 
+* Dedicated worker thread
+* Frame dropping to avoid backlog
+* Model-only latency measurement
+* Hardware-aware benchmarking
+
+---
+
+## 🛠 Installation
+
+```bash
+git clone https://github.com/yourusername/edge-ai-performance-benchmark.git
+cd edge-ai-performance-benchmark
+
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
+
+pip install -r requirements.txt
 ```
 
 ---
 
-## 📦 Tech Stack
+## ▶️ Run the Application
 
-- Python
-- OpenCV
-- MediaPipe
-- Matplotlib
-- psutil
+```bash
+python app.py
+```
 
 ---
 
-## 🎯 Why This Project Matters
+## 📊 Exporting Results
 
-This project demonstrates:
+After stopping a session:
 
-- Hardware-aware AI development
-- Real-time performance benchmarking
-- Trade-off analysis (latency vs resolution vs power)
-- Structured experimentation
-- Reproducible measurement methodology
+1. Click **Export CSV + Plots**
+2. CSV will contain all logged frames
+3. Plots include:
 
-Accuracy alone is meaningless in physical systems without performance guarantees.
-
----
-
-## 🔮 Future Improvements
-
-- Separate inference vs preprocessing timing
-- CPU / memory utilization tracking
-- Statistical summaries (std, min, max)
-- Multi-threaded pipeline testing
-- Embedded device benchmarking (Raspberry Pi / Jetson)
+   * Latency over time
+   * FPS over time
+   * Resolution comparison
+   * Power state comparison
+   * Combined summary analysis
 
 ---
 
-## 📜 License
+## 🧠 What This Project Demonstrates
 
-MIT License
+* Real-time performance measurement
+* Edge AI optimization strategies
+* Hardware-aware system design
+* Trade-offs between resolution, latency, and FPS
+* Engineering decision documentation
+
+---
+
+# 🏁 3️⃣ Demo Plan (Very Important)
+
+Create a 2–3 minute demo video.
+
+## 🎬 Demo Structure
+
+### 1️⃣ Intro (20 sec)
+
+* “This is an Edge AI Performance Benchmarker”
+* Explain why latency matters more than accuracy in robotics
+
+### 2️⃣ Live Demo (1.5 min)
+
+* Start app
+* Show hand tracking
+* Switch to face tracking
+* Change resolution
+* Change processing rate
+* Show live plots responding
+
+### 3️⃣ Export (20 sec)
+
+* Stop
+* Export CSV + plots
+* Show generated files
+
+### 4️⃣ Engineering Wrap-Up (30 sec)
+
+* Explain frame dropping
+* Explain worker threading
+* Mention hardware constraints
+
+---
+
+# 🎯 Suggested Final Commit Message
+
+```bash
+feat: replace Streamlit dashboard with PySide6 realtime desktop UI
+
+- Implemented worker thread for capture and inference
+- Added frame-dropping mechanism to eliminate backlog lag
+- Integrated pyqtgraph for realtime latency and FPS plots
+- Added live mode/resolution switching
+- Enabled CSV and final plot export from Qt interface
+- Finalized production-ready architecture
 ```

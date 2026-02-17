@@ -8,8 +8,10 @@ import os
 import time
 from datetime import datetime
 
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use("Agg")
 
+import matplotlib.pyplot as plt
 
 @dataclass
 class PerfRow:
